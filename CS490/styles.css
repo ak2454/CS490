@@ -1,0 +1,38 @@
+
+.card{
+    margin-top: 30px;
+    width: 2504px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.user-img{
+    float: left;
+    margin-top: 10px;
+    margin-left: 5px;
+    border-radius: 50%;
+    cursor: pointer;
+    border-style: solid;
+}
+h5{
+    
+    cursor: pointer;
+}
+
+.profilepic{
+    position: relative;
+    align-items: center;
+    height:25px;
+    width:25px;
+}
+
+.form-group{
+    width: 200px; 
+    display: block;   
+    margin: 0 auto;
+}
+.login-btn{
+    width: 200px; 
+    display: block;   
+    margin: 0 auto;
+    margin-top: 50px;
+}

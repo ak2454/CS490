@@ -8,6 +8,7 @@ function is_logged_in() {
 }
 
 function has_role($role) {
+
     if (is_logged_in() && isset($_SESSION["user"]["roles"])) {
         foreach ($_SESSION["user"]["roles"] as $r) {
             if ($r["name"] == $role) {
@@ -74,7 +75,7 @@ function getURL($path) {
     if (substr($path, 0, 1) == "/") {
         return $path;
     }
-    return $_SERVER["CONTEXT_PREFIX"] . "/IT202/project/$path";
+    return $_SERVER["CONTEXT_PREFIX"] . "/CS490/CS490$path";
 }
 
 
