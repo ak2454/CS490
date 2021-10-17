@@ -11,44 +11,43 @@ if (!is_logged_in()) {
 }
 
 ?>
-
-<h1><?php echo exec('whoami'); ?></h1>
-<form role="form" id="uploadForm" method="post" enctype="multipart/form-data">
-   <input id="fileToUpload" name="fileToUpload" type="file" class="file" />
-   <button type="submit" name="submit" id="submit">Upload</button>
-</form>
-
-
-
+<?php echo exec('whoami'); ?>
 <?php
-$target_dir = "./uploads/";
 
-if(isset($_POST["submit"])) {
-$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-$uploadOk = 1;
-}
+if (isset($_POST["submit"])){
+   $file = $_FILES['file'];
+   $fileName = $_FILES['file']['name'];
+   $fileTmpName = $_FILES['file']['tmp_name'];
+   $fileSize = $_FILES['file']['size'];
+   $fileErr = $_FILES['file']['error'];
+   $fileType = $_FILES['file']['type'];
 
-if (file_exists($target_file)) {
-echo "Sorry, file already exists.";
-$uploadOk = 0;
-}
+   $fileExt = explode('.', $fileName);
+   $fileActualExt = strtolower(end($fileExt));
+   $acceptedExtensions = array('jpg', 'png', 'jpeg'); 
+   
+   if (in_array($fileActualExt, $acceptedExtensions)){
+      if($fileErr === 0){
+         if ($fileSize < 1000000){
+            $fileNameNew = uniqid('', true).".".$fileActualExt;
+            $fileDestination = 'uploads/'.$fileNameNew;
+            move_uploaded_file($fileTmpName, $fileDestination);
+            
+         }
+         else{
+            echo " file size is too large!!";
+         }
 
-if ($_FILES["fileToUpload"]["size"] > 5000000) {
-echo "Sorry, your file is too large.";
-$uploadOk = 0;
-}
-
-if ($uploadOk == 0) {
-echo $uploadOk . "Sorry, your file was not uploaded.";
-} else {
-  if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-   echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
-  } else{
-     echo "Sorry, there was an error uploading your file.";
-  }
-}
+      } 
+      else{
+         echo "Error whiile uploading file";
+      }
+   }
+   else{
+      echo "Extension not accepted, Sorry! please use PNG, JPG, or JPEG files";
+   }
+}  
 ?>
-
 
 
 

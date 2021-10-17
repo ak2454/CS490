@@ -3,7 +3,7 @@
 <form method="POST">
         <div class="form-group">
             <label for="input">Email or Username:</label>
-            <input class="form-control" type="input" id="input" name="input" required/>
+            <input class="form-control" autofocus="true" type="input" id="input" name="input" required/>
         </div>
         <div class="form-group">
             <label for="p1">Password:</label>

@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS `Messages`(
     `updated_time` DATETIME,
     `content` VARCHAR(250),
     PRIMARY KEY (`id`),
-    FOREIGN KEY (`sender_id`) REFERENCES Users(`id`)
+    FOREIGN KEY (`sender_id`) REFERENCES Users(`id`),
+    FOREIGN KEY (`receiver_id`) REFERENCES Users(`id`)
 
 
 )

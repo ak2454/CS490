@@ -1,4 +1,4 @@
-<?php require_once(__DIR__ . "/partials/nav.php"); ?>
+<?php require_once("../partials/nav.php"); ?>
 <?php
 if (!is_logged_in()) {
     //this will redirect to login and kill the rest of this script (prevent it from executing)
@@ -8,7 +8,6 @@ if (!is_logged_in()) {
 ?>
 <?php
 
-
 $results = [];
 $query = "";
 if(isset($_GET["search"])){
@@ -17,7 +16,7 @@ if(isset($_GET["search"])){
 
 if (isset($_GET["search"]) && !empty($query)) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT * FROM Products WHERE name like :q AND visibility = 1 LIMIT 10");
+    $stmt = $db->prepare("SELECT username, email, created,id, bio FROM Users WHERE username like :q");
 
     $r = $stmt->execute([":q" => "%$query%"]);
     if ($r) {
@@ -36,17 +35,18 @@ if (isset($_GET["search"]) && !empty($query)) {
 <div class="row" style= "margin-left: 4em;">
 <?php if (count($results) > 0): ?>
     <?php foreach ($results as $r): ?>
-      <div   class="card" style="width: 20rem; margin: 1em;">
-        <img src="" class="card-img-top" alt="...">
+      <div class="card" style="width: 20rem; margin: 1em;">
+        <img src="not yet" class="card-img-top" alt="...">
         <div class="card-body">
-          <a href = "ViewProduct.php?id=<?php safer_echo($r['id']); ?>" <h5 class="card-title"><?php safer_echo($r["name"]); ?></h5></a>
-          <h6 class="card-title"><?php safer_echo($r["price"]); ?></h6>
-          <p class="card-text"><?php safer_echo($r["description"]); ?></p>
-          <?php if (has_role("Admin")): ?>
-            <a href="test_view_product.php?id=<?php safer_echo($r['id']); ?>" class="btn btn-primary">Edit</a>
-          <?php endif; ?>
+          <a href = "profile.php?id=<?php safer_echo($r['id']);?>"> <strong>email: </strong> <?php safer_echo($r["email"]); ?></a>
+
+          <h6 class="card-title"><strong>username: </strong> <?php  safer_echo($r["username"]); ?></h6>
+          <p class="card-text"><strong>bio: </strong> <?php safer_echo($r["bio"]); ?></p>
+
           </div>
         </div>
 <?php endforeach; ?>
 <?php endif; ?>
 </div>
+
+<?php require("../partials/flash.php");?>

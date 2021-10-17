@@ -7,13 +7,12 @@ require_once( "../lib/helpers.php");
 
 <!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-
 <!-- jQuery and JS bundle w/ Popper.js -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
 
 
-<bla class="navbar navbar-expand-lg navbar-light" style="background-color: #071D49;">
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #071D49;">
   <a class="navbar-brand" href="feed.php">
     <img src="img/logo.png" width="50" height="50" class="d-inline-block align-top" alt="" loading="lazy">
   </a>
@@ -24,7 +23,7 @@ require_once( "../lib/helpers.php");
       <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class="input-group"style="width: 500; ">
+        <div class="input-group" style="width: 500; display:flex; margin-left: 610px;">
           <span class="input-group-prepend">
             <div class="input-group-text border-right-0">
               <i class="fa fa-search" ></i>
@@ -49,33 +48,49 @@ require_once( "../lib/helpers.php");
       </div>
     </form>
 
-      <div>
+      <?php if (has_role("Admin")): ?>     
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" style = "color: white;" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Admin features
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="register.php">Add Account</a>
+          <a class="dropdown-item" href="blockedPosts.php">View Blocked Posts</a>
+          <a class="dropdown-item" href="#">more features coming soon</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">what he said ^</a>
+        </div>
+      </li>
+      <?php endif; ?>
+
+
+      <div>        
           <a href="uploadFront.php">
-          <button style="color: black;"  type="button" class = "btn pull-right">
+          <button style="color: black;"  type="button" class = "btn pull-right" data-toggle="tooltip" data-placement="bottom" title="Upload">
             <img src="../CS490/img/plus.png" style=" height:30px; width:30px;">
           </button>
         </a>
       </div>
       <div>
           <a href="profile.php">
-          <button style="color: black;"  type="button" class = "btn pull-right">
+          <button style="color: black;"  type="button" class = "btn pull-right" data-toggle="tooltip" data-placement="bottom" title="Profile">
             <img src="../CS490/img/profile.png" style=" height:30px; width:30px;">
           </button>
         </a>
       </div>
       <div>
-          <a href="texts.php">
-            <button style="color: black;"  type="button" class = "btn pull-right">
+          <a href="messages.php">
+            <button style="color: black;"  type="button" class = "btn pull-right" data-toggle="tooltip" data-placement="bottom" title="Chat">
               <img src="../CS490/img/messagebox.png" style="height:30px; width:30px;">
             </button>
           </a>
       </div>
       <div>
           <a href="logout.php">
-            <button style="color: black;"  type="button" class = "btn pull-right">
+            <button style="color: black;"  type="button" class = "btn pull-right" data-toggle="tooltip" data-placement="bottom" title="Logout">
               <img src="../CS490/img/logout.png" style="height:30px; width:30px;">
             </button>
           </a>
       </div>
   <?php endif; ?>
-</bla>
+      </nav>

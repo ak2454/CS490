@@ -14,7 +14,7 @@ $isValid = true;
 $db = getDB();
 
 $userID = get_user_id();
-if (isset($_GET["   id"])){ //checking which ID to use
+if (isset($_GET["id"])){ //checking which ID to use
     $userID = $_GET["id"];
 }
 
@@ -32,9 +32,11 @@ $result = $stmt->fetchall(PDO::FETCH_ASSOC);
 
 ?>
 
-<?php if (has_role("Admin")): ?>
-    <h1> Woah this guy is an admin </h1>
-<?php endif; ?>
+<?php if (has_role("Admin")){
+    echo "im an admin";
+} 
+?>
+
 <div style="margin: auto; width: 50%; border: 1.5px solid grey;">
     <div>
         <div style="border: 3px solid white;">
@@ -44,9 +46,6 @@ $result = $stmt->fetchall(PDO::FETCH_ASSOC);
             <h5> <?php echo $userInfo[0]["username"]; ?> </h5>
 
             <input style="position:relative; left:200px;bottom:65px;" class="btn btn-primary" type="submit" name="settings" value="Edit Profile"/>
-            <a href="./register.php" >
-                <input  style="position:relative; left:300px;bottom:65px;" class="btn btn-primary" type="submit" name="settings" value="Create User"/>
-            </a>
             <p> <?php echo $userInfo[0]["bio"]; ?></p>
         </div>
         <?php foreach($result as $post){?>

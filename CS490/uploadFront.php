@@ -13,6 +13,6 @@ if (!is_logged_in()) {
 
 
 <form role="form" action= "uploadBack.php" id="uploadForm" method="post" enctype="multipart/form-data">
-   <input id="fileToUpload" name="fileToUpload" type="file" class="file" />
+   <input id="fileToUpload" name="file" type="file" class="file" />
    <button type="submit" name="submit" id="submit">Upload</button>
 </form>

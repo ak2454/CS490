@@ -24,7 +24,7 @@ if (isset($_SESSION["user"]) && isset($_SESSION["user"]["email"])) {
 
 }
 
-$stmt = $db->prepare("SELECT Posts.id as id, Posts.user_id, Posts.caption, Posts.img_url, Posts.created, Users.username from Posts JOIN Users ON Users.id = Posts.user_id ORDER BY Posts.created DESC ");
+$stmt = $db->prepare("SELECT Posts.id as id, Posts.user_id, Posts.caption, Posts.img_url, Posts.created, Posts.is_blocked, Users.username from Posts JOIN Users ON Users.id = Posts.user_id ORDER BY Posts.created DESC ");
 $r = $stmt->execute();
 $result = $stmt->fetchall(PDO::FETCH_ASSOC);
 
@@ -33,37 +33,49 @@ $result = $stmt->fetchall(PDO::FETCH_ASSOC);
 <?php if ($email){ ?>
     <?php //for each post to be shown on feed, grab post-ID , post-owner-username, post-owner-profile-image, post-image, post-caption, comments-text, comment-owner, comment-date  ?>
     <?php foreach( $result as $post){ ?>
-        <div class="card" style="width: 40rem;">
-        <img class="user-img" src="https://www.cityofturlock.org/_images/dogbarking.jpg" width="30" height="30">
-        <div style="flex-direction:row;">
-            <h5  style="display:inline-block; float:left;" ><?php echo $post["username"] ?></h5>
-            <?php if (has_role("Admin")): ?>
-                <button type="button" class="btn btn-primary" style="display:inline-block; float:right; margin-right: 50px;">Block Post</button>
-            <?php endif; ?>
-        </div>
-        <div class="card-body">
-            <img class="card-img-top" src="img/<?php echo $post["img_url"];?>" alt="Card image cap">
-            <p class="card-text">USERNAME: <?php echo $post["caption"] ?></p>
-            <p class="card-text" style = "color:grey;"><strong>comments:</strong></p>
-            <ul class="list-group">
-                <?php //for each comment:
-                $postID = $post["id"];
-                $stmt = $db->prepare("SELECT Users.username as username, Comments.comment, Comments.post_id, Comments.created FROM Users JOIN  Comments on Users.id = Comments.user_id where Comments.post_id = :id ORDER BY Comments.created");
-                $r = $stmt->execute([":id" =>$postID]);
-                $commentInfo = $stmt->fetchall(PDO::FETCH_ASSOC);
-                foreach($commentInfo as $comment){
+        <?php if ($post["is_blocked"] == 1){ ?>
+            <div class="card" style="width: 40rem;">
+            <img class="user-img" src="https://www.cityofturlock.org/_images/dogbarking.jpg" width="30" height="30">
+            <div style="flex-direction:row;">
+                <h5  style="display:inline-block; float:left;" ><?php echo $post["username"] ?></h5>
+                <?php if (has_role("Admin")): ?>
+                    <form method="POST">
+                        <input type="submit" name="block" style="display:inline-block; float:right; margin-right: 50px;" value="<?php safer_echo($post["id"]) ?>">
+                        <h4 style="float:right;"> Block Post: </h4>
+                    </form>
+                <?php endif; ?>
+                <?php 
+                if(isset($_POST['block'])) {
+                    $postID = $_POST['block'];
+                    $stmt = $db->prepare("UPDATE Posts SET is_blocked = 2 WHERE (id = $postID)"); 
+                    $r = $stmt->execute();
+                }
                 ?>
-                <li class="list-group-item"><strong><?php echo $comment["username"];?></strong> <?php echo $comment["comment"];?> <small style ="float: right; color:grey;"> <?php echo $comment["created"];?></small></li>
-                <?php } ?>
-            </ul>
-            <form method="POST">
-                <div class="form-group">
-                    <input class="form-control" type="text" id="comment" name="comment" placeholder = "comment"/>
-                    <input type="hidden" id="postID" name="postID" value="<?php echo $post["id"];?>">
-                </div>
-                <input class="btn btn-primary" type="submit" name="submit" value="add comment"/>
-            </form>
-        </div>
+            </div>
+            <div class="card-body">
+                <img class="card-img-top" src="img/<?php echo $post["img_url"];?>" alt="Card image cap">
+                <p class="card-text"><strong><?php echo $post["username"] ?>:</strong> <?php echo $post["caption"] ?></p>
+                <p class="card-text" style = "color:grey;"><strong>comments:</strong></p>
+                <ul class="list-group">
+                    <?php //for each comment:
+                    $postID = $post["id"];
+                    $stmt = $db->prepare("SELECT Users.username as username, Comments.comment, Comments.post_id, Comments.created FROM Users JOIN  Comments on Users.id = Comments.user_id where Comments.post_id = :id ORDER BY Comments.created");
+                    $r = $stmt->execute([":id" =>$postID]);
+                    $commentInfo = $stmt->fetchall(PDO::FETCH_ASSOC);
+                    foreach($commentInfo as $comment){
+                    ?>
+                    <li class="list-group-item"><strong><?php echo $comment["username"];?></strong> <?php echo $comment["comment"];?> <small style ="float: right; color:grey;"> <?php echo $comment["created"];?></small></li>
+                    <?php } ?>
+                </ul>
+                <form method="POST">
+                    <div class="form-group">
+                        <input class="form-control" type="text" id="comment" name="comment" placeholder = "comment"/>
+                        <input type="hidden" id="postID" name="postID" value="<?php echo $post["id"];?>">
+                    </div>
+                    <input class="btn btn-primary" type="submit" name="submit" value="add comment"/>
+                </form>
+            </div>
+        <?php } ?>
     <?php } ?>
 
   <?php } ?>
@@ -83,6 +95,10 @@ $result = $stmt->fetchall(PDO::FETCH_ASSOC);
         }
 
     }
+
+    //Block post
+    
+
 
 
 }
