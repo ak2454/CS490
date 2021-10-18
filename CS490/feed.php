@@ -24,10 +24,32 @@ if (isset($_SESSION["user"]) && isset($_SESSION["user"]["email"])) {
 
 }
 
-$stmt = $db->prepare("SELECT Posts.id as id, Posts.user_id, Posts.caption, Posts.img_url, Posts.created, Posts.is_blocked, Users.username from Posts JOIN Users ON Users.id = Posts.user_id ORDER BY Posts.created DESC ");
+$stmt = $db->prepare("SELECT Posts.id as id, Posts.user_id, Posts.caption, Posts.img_url, Posts.created, Posts.is_blocked, Users.username, Users.img_url as profilePic from Posts JOIN Users ON Users.id = Posts.user_id ORDER BY Posts.created DESC ");
 $r = $stmt->execute();
 $result = $stmt->fetchall(PDO::FETCH_ASSOC);
 
+
+?>
+
+<?php //add comment
+    if (isset($_POST["comment"]) && isset($_POST["submit"]) && strlen($_POST["comment"]) > 0 ) {
+    $comment = $_POST["comment"]; //send to database where postID
+    $postID = $_POST["postID"];
+    if (isset($db)) {
+
+        $stmt = $db->prepare("INSERT INTO Comments(comment, post_id, user_id) VALUES(:comment,:post, :user)");
+        $params = array(":comment" => $comment, ":post" => $postID, ":user" => get_user_id());
+        $r = $stmt->execute($params);
+        $e = $stmt->errorInfo();
+
+    }
+
+    //Block post
+    
+
+
+
+}
 
 ?>
 <?php if ($email){ ?>
@@ -35,25 +57,25 @@ $result = $stmt->fetchall(PDO::FETCH_ASSOC);
     <?php foreach( $result as $post){ ?>
         <?php if ($post["is_blocked"] == 1){ ?>
             <div class="card" style="width: 40rem;">
-            <img class="user-img" src="https://www.cityofturlock.org/_images/dogbarking.jpg" width="30" height="30">
+            <img class="user-img" src="uploads/<?php echo $post["profilePic"]; ?>" width="30" height="30">
             <div style="flex-direction:row;">
                 <h5  style="display:inline-block; float:left;" ><?php echo $post["username"] ?></h5>
                 <?php if (has_role("Admin")): ?>
                     <form method="POST">
-                        <input type="submit" name="block" style="display:inline-block; float:right; margin-right: 50px;" value="<?php safer_echo($post["id"]) ?>">
-                        <h4 style="float:right;"> Block Post: </h4>
+                        <input type="submit" name="block" style="display:inline-block; float:right; margin-right: 50px;" value="block">
+                        <input type="text" name="id" style="display:inline-block; float:right; margin-right: 50px;" value="<?php safer_echo($post["id"]) ?>" hidden>
                     </form>
                 <?php endif; ?>
                 <?php 
                 if(isset($_POST['block'])) {
-                    $postID = $_POST['block'];
+                    $postID = $_POST['id'];
                     $stmt = $db->prepare("UPDATE Posts SET is_blocked = 2 WHERE (id = $postID)"); 
                     $r = $stmt->execute();
                 }
                 ?>
             </div>
             <div class="card-body">
-                <img class="card-img-top" src="img/<?php echo $post["img_url"];?>" alt="Card image cap">
+                <img class="card-img-top" src="uploads/<?php echo $post["img_url"];?>" alt="Card image cap">
                 <p class="card-text"><strong><?php echo $post["username"] ?>:</strong> <?php echo $post["caption"] ?></p>
                 <p class="card-text" style = "color:grey;"><strong>comments:</strong></p>
                 <ul class="list-group">
@@ -66,41 +88,18 @@ $result = $stmt->fetchall(PDO::FETCH_ASSOC);
                     ?>
                     <li class="list-group-item"><strong><?php echo $comment["username"];?></strong> <?php echo $comment["comment"];?> <small style ="float: right; color:grey;"> <?php echo $comment["created"];?></small></li>
                     <?php } ?>
-                </ul>
                 <form method="POST">
-                    <div class="form-group">
+                    <div class="form-group" style="width:80%; float:left;" >
                         <input class="form-control" type="text" id="comment" name="comment" placeholder = "comment"/>
                         <input type="hidden" id="postID" name="postID" value="<?php echo $post["id"];?>">
                     </div>
-                    <input class="btn btn-primary" type="submit" name="submit" value="add comment"/>
+                    <input style="width:20%; float:right;" class="btn btn-primary" type="submit" name="submit" value="add comment"/>
                 </form>
+            </ul>
+                
             </div>
         <?php } ?>
     <?php } ?>
 
   <?php } ?>
 
-<?php //add comment
-    if (isset($_POST["comment"]) && isset($_POST["submit"]) && strlen($_POST["comment"]) > 0 ) {
-    $comment = $_POST["comment"]; //send to database where postID
-    $postID = $_POST["postID"];
-    if (isset($db)) {
-
-        $stmt = $db->prepare("INSERT INTO Comments(comment, post_id, user_id) VALUES(:comment,:post, :user)");
-        $params = array(":comment" => $comment, ":post" => $postID, ":user" => get_user_id());
-        $r = $stmt->execute($params);
-        $e = $stmt->errorInfo();
-        if ($e[0] == "00000") {
-            flash("comment added");
-        }
-
-    }
-
-    //Block post
-    
-
-
-
-}
-
-?>

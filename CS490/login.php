@@ -9,7 +9,7 @@
             <label for="p1">Password:</label>
             <input class="form-control" type="password" id="p1" name="password" required/>
         </div>
-        <input class="login-btn" type="submit" name="login" value="Login"/>
+        <input class="login-btn" type="submit" name="login" value="Login" style = "background-color: #071d49; text-align: center;" />
     </form>
 
 <?php

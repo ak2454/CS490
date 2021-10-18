@@ -23,6 +23,12 @@ if (isset($_SESSION["user"]) && isset($_SESSION["user"]["email"])) {
     $email = $_SESSION["user"]["email"];
 
 }
+ 
+if(isset($_POST['block'])) {
+    $postID = $_POST['id'];
+    $stmt = $db->prepare("UPDATE Posts SET is_blocked = 1 WHERE (id = $postID)"); 
+    $r = $stmt->execute();
+}
 
 $stmt = $db->prepare("SELECT Posts.id as id, Posts.user_id, Posts.caption, Posts.img_url, Posts.created, Posts.is_blocked, Users.username from Posts JOIN Users ON Users.id = Posts.user_id ORDER BY Posts.created DESC ");
 $r = $stmt->execute();
@@ -40,20 +46,13 @@ $result = $stmt->fetchall(PDO::FETCH_ASSOC);
                 <h5  style="display:inline-block; float:left;" ><?php echo $post["username"] ?></h5>
                 <?php if (has_role("Admin")): ?>
                     <form method="POST">
-                        <input type="submit" name="block" style="display:inline-block; float:right; margin-right: 50px;" value="<?php safer_echo($post["id"]) ?>">
-                        <h4 style="float:right;"> Unblock Post: </h4>
+                        <input type="submit" name="block" style="display:inline-block; float:right; margin-right: 50px;" value="unblock">
+                        <input type="text" name="id" style="display:inline-block; float:right; margin-right: 50px;" value="<?php safer_echo($post["id"]) ?>" hidden>
                     </form>
                 <?php endif; ?>
-                <?php 
-                if(isset($_POST['block'])) {
-                    $postID = $_POST['block'];
-                    $stmt = $db->prepare("UPDATE Posts SET is_blocked = 1 WHERE (id = $postID)"); 
-                    $r = $stmt->execute();
-                }
-                ?>
             </div>
             <div class="card-body">
-                <img class="card-img-top" src="img/<?php echo $post["img_url"];?>" alt="Card image cap">
+                <img class="card-img-top" src="uploads/<?php echo $post["img_url"];?>" alt="Card image cap">
                 <p class="card-text"><strong><?php echo $post["username"] ?>:</strong> <?php echo $post["caption"] ?></p>
                 <p class="card-text" style = "color:grey;"><strong>comments:</strong></p>
                 <ul class="list-group">

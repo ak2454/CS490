@@ -16,7 +16,6 @@ if (isset($_POST["register"])) {
     $isValid = true;
     if (isset($_POST["roles"])) {
         $roles = $_POST["roles"];
-        echo $roles;
     }
     if (isset($_POST["email"])) {
         $email = $_POST["email"];
@@ -42,10 +41,10 @@ if (isset($_POST["register"])) {
     //check if passwords match on the server side
     if ($password == $confirm) {
         //not necessary to show
-        echo "Passwords match <br>";
+        //echo "Passwords match <br>";
     }
     else {
-        flash("Passwords don't match");
+        //flash("Passwords don't match");
         $isValid = false;
     }
     if (!isset($email) || !isset($password) || !isset($confirm) ||!isset($username) || !isset($roles) ) {
@@ -100,13 +99,14 @@ if (!isset($username)) {
 <div class="signup-form" style="margin-left: 400;width: 400; color: grey;
 border-radius: 3px;
 margin-bottom: 15px;
-background: rgb(181, 226, 197);
+background: #aac1e5;
 box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-padding: 30px;">
-    <form method="post">
+padding: 30px;
+margin: auto;">
+    <form method="post" >
                 <h2 style = "text-align: center;">~ Register ~</h2>
                 <p class="hint-text">Create your account here to view all our products!</p>
-        <div class="form-group">
+        <div class="form-group"> 
           <input class="form-control"  placeholder="Username" id="user" name="username" required maxlength="60" value="<?php safer_echo($username); ?>"</div>
         </div>
         <div class="form-group">

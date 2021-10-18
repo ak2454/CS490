@@ -16,7 +16,7 @@ if(isset($_GET["search"])){
 
 if (isset($_GET["search"]) && !empty($query)) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT username, email, created,id, bio FROM Users WHERE username like :q");
+    $stmt = $db->prepare("SELECT username, email, created,id, bio, img_url FROM Users WHERE username like :q");
 
     $r = $stmt->execute([":q" => "%$query%"]);
     if ($r) {
@@ -36,7 +36,7 @@ if (isset($_GET["search"]) && !empty($query)) {
 <?php if (count($results) > 0): ?>
     <?php foreach ($results as $r): ?>
       <div class="card" style="width: 20rem; margin: 1em;">
-        <img src="not yet" class="card-img-top" alt="...">
+        <img src="uploads/<?php safer_echo($r['img_url']);?>" class="card-img-top" alt="...">
         <div class="card-body">
           <a href = "profile.php?id=<?php safer_echo($r['id']);?>"> <strong>email: </strong> <?php safer_echo($r["email"]); ?></a>
 
